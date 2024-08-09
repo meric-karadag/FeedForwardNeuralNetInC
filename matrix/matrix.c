@@ -194,31 +194,30 @@ Matrix *matrixFlatten(Matrix *matrix, int axis)
   if (axis == 0)
   {
     flattened = matrixCreate(matrix->rows * matrix->cols, 1);
+    for (i = 0; i < matrix->rows; i++)
+    {
+      for (j = 0; j < matrix->cols; j++)
+      {
+        flattened->entries[i * matrix->cols + j][0] = matrix->entries[i][j];
+      }
+    }
+    return flattened;
   }
   else if (axis == 1)
   {
     flattened = matrixCreate(1, matrix->rows * matrix->cols);
+    for (i = 0; i < matrix->rows; i++)
+    {
+      for (j = 0; j < matrix->cols; j++)
+      {
+        flattened->entries[0][i * matrix->cols + j] = matrix->entries[i][j];
+      }
+    }
+    return flattened;
   }
   else
   {
     printf("Argument to matrix_flatten must be 0 or 1");
     exit(EXIT_FAILURE);
   }
-
-  for (i = 0; i < matrix->rows; i++)
-  {
-    for (j = 0; j < matrix->cols; j++)
-    {
-      if (axis == 0)
-      {
-        flattened->entries[i * matrix->cols + j][0] = matrix->entries[i][j];
-      }
-      else
-      {
-        flattened->entries[0][i * matrix->cols + j] = matrix->entries[i][j];
-      }
-    }
-  }
-
-  return flattened;
 }
