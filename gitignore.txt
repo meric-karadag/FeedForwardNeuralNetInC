@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+matrixTest.c
+matrix.txt
+main
+ops
+matrixOpsTest.c
