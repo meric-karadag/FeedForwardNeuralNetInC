@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MATRIX
+#define MATRIX
 
 typedef struct
 {
@@ -18,3 +19,5 @@ double randn(double mean, double std);
 void matrixRandomInit(Matrix *matrix, double mean, double std);
 int matrixArgmax(Matrix *matrix);
 Matrix *matrixFlatten(Matrix *matrix, int axis);
+
+#endif
