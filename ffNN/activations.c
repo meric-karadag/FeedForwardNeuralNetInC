@@ -2,6 +2,11 @@
 #include <math.h>
 #include "../matrix/matrixOps.h"
 
+double square(double x)
+{
+  return x * x;
+}
+
 double sigmoid(double x)
 {
   return 1.0 / (1.0 + exp(-1.0 * x));
@@ -14,6 +19,11 @@ double relu(double x)
     return x;
   }
   return 0.0;
+}
+
+double reluPrime(double x)
+{
+  return x >= 0 ? 1 : 0;
 }
 
 Matrix *sigmoidPrime(Matrix *matrix)
@@ -30,49 +40,57 @@ Matrix *sigmoidPrime(Matrix *matrix)
   return multiplied;
 }
 
-Matrix *reluPrime(Matrix *matrix)
-{
-  int i, j;
-  Matrix *result = matrixCreate(matrix->rows, matrix->cols);
-
-  for (i = 0; i < matrix->rows; i++)
-  {
-    for (j = 0; j < matrix->cols; j++)
-    {
-      if (matrix->entries[i][j] >= 0)
-      {
-        result->entries[i][j] = 1;
-      }
-      else
-      {
-        result->entries[i][j] = 0;
-      }
-    }
-  }
-  return result;
-}
-
+// Apply softmax row-wise, normalize each row on its own
 Matrix *softmax(Matrix *matrix)
 {
   int i, j;
-  double total = 0;
+  double sumExp;
   Matrix *result = matrixCreate(matrix->rows, matrix->cols);
 
   for (i = 0; i < matrix->rows; i++)
   {
+    sumExp = 0;
     for (j = 0; j < matrix->cols; j++)
     {
-      total += exp(matrix->entries[i][j]);
+      sumExp += exp(matrix->entries[i][j]);
     }
-  }
-
-  for (i = 0; i < matrix->rows; i++)
-  {
     for (j = 0; j < matrix->cols; j++)
     {
-      matrix->entries[i][j] = exp(matrix->entries[i][j]) / total;
+      result->entries[i][j] = exp(matrix->entries[i][j]) / sumExp;
     }
   }
-
   return result;
 }
+
+double mseLoss(Matrix *preds, Matrix *groundTruth)
+{
+  double mse, sum = 0.0;
+  int i, j;
+  Matrix *diff = elementWiseSubtract(preds, groundTruth);
+  Matrix *squaredDiff = apply(diff, square);
+
+  for (i = 0; i < squaredDiff->rows; i++)
+  {
+    for (j = 0; j < squaredDiff->cols; j++)
+    {
+      sum += squaredDiff->entries[i][j];
+    }
+  }
+  mse = sum / squaredDiff->rows;
+  matrixFree(diff);
+  matrixFree(squaredDiff);
+  return mse;
+}
+
+double crossEntropyLoss(Matrix *preds, Matrix *groundTruth)
+{
+  double loss = 0;
+  int i, j;
+  for (i = 0; i < preds->rows; i++)
+  {
+    for (j = 0; j < preds->cols; j++)
+    {
+      loss -= groundTruth->entries[i][j] * log(preds->entries[i][j]);
+    }
+  }
+  return loss / preds->rows;
