@@ -167,6 +167,7 @@ void matrixRandomInit(Matrix *matrix, double mean, double std)
 }
 
 // Returns the index of maximum value from a column vector: Matrix of size (N x 1)
+/*
 int matrixArgmax(Matrix *matrix)
 {
   int i, maxIdx = 0;
@@ -177,6 +178,25 @@ int matrixArgmax(Matrix *matrix)
     if (matrix->entries[i][0] > maxVal)
     {
       maxVal = matrix->entries[i][0];
+      maxIdx = i;
+    }
+  }
+
+  return maxIdx;
+}
+*/
+
+// Returns the index of maximum value from a row vector: Matrix of size (1 x N)
+int matrixArgmax(Matrix *matrix)
+{
+  int i, maxIdx = 0;
+  double maxVal = __DBL_MIN__;
+
+  for (i = 0; i < matrix->rows; i++)
+  {
+    if (matrix->entries[0][i] > maxVal)
+    {
+      maxVal = matrix->entries[0][i];
       maxIdx = i;
     }
   }
