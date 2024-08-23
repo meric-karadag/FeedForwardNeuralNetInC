@@ -8,7 +8,7 @@ typedef struct img
   int label;
 } Img;
 
-Img **csvToImg(char *filename, int *numImages);
+Img **csvToImg(char *filename, int numImages, int imgDimRow, int imgDimCol);
 void imgPrint(Img *img);
 void imgFree(Img *img);
 void imgsFree(Img **imgs, int numImages);
