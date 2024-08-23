@@ -94,3 +94,4 @@ double crossEntropyLoss(Matrix *preds, Matrix *groundTruth)
     }
   }
   return loss / preds->rows;
+}

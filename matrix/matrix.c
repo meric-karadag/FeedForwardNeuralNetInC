@@ -17,7 +17,7 @@ Matrix *matrixCreate(int row, int col)
   // Allocate col number of doubles for each row
   for (int i = 0; i < row; i++)
   {
-    matrix->entries[i] = malloc(sizeof(double) * row);
+    matrix->entries[i] = malloc(sizeof(double) * col);
   }
 
   return matrix;
@@ -206,7 +206,7 @@ int matrixArgmax(Matrix *matrix)
 
 // Takes a (N,M) matrix as input, returns flattened version of it
 // If Axis = 0 -> Returns (N*M, 1) Column vector
-// If Axis = 1 -> Returns(1, N*M) Column vector
+// If Axis = 1 -> Returns(1, N*M) Row vector
 Matrix *matrixFlatten(Matrix *matrix, int axis)
 {
   int i, j;
