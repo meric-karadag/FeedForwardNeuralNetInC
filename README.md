@@ -77,7 +77,7 @@ This command will train the neural network with 5000 training images and 1000 te
 
 Data
 ----
-The training and test data can be obtain from the following link: [MNIST Dataset](https://www.kaggle.com/oddrationale/mnist-in-csv)
+The training and test data can be obtained from the following link: [MNIST Dataset](https://www.kaggle.com/oddrationale/mnist-in-csv)
 
 Results
 -------
