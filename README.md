@@ -52,7 +52,7 @@ The program can be executed with a variety of command-line arguments to customiz
 *   **`-T <test_data.csv>`** : Path to the test data CSV file.
 *   **`-e <epochs>`** : Number of epochs for training. (Default: 5)
 *   **`-l <learning_rate>`** : Learning rate for the network. (Default: 0.001)
-*   **`-h <hidden_dim>`** : Number of units in the hidden layer. (Default: 300)
+*   **`-h <hidden_dim>`** : Number of units in the hidden layer. (Default: 512)
 *   **`-d <save_path>`** : Path where the best model will be saved.
 *   **`-r <num_train_images>`** : Number of training images to use. (Default: 10000)
 *   **`-s <num_test_images>`** : Number of test images to use. (Default: 1000)

@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
 {
   // Default parameter values
   int epochs = 5;
-  int hiddenDim = 300;
+  int hiddenDim = 512;
   double learningRate = 1e-3;
   int numTrainImages = 10000;
   int numTestImages = 1000;
