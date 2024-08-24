@@ -108,20 +108,39 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predicte
   return loss;
 }
 
-void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
+// Function to log progress to a file
+void logProgress(FILE *logFile, const char *format, ...)
+{
+  if (logFile)
+  {
+    va_list args;
+    va_start(args, format);
+    vfprintf(logFile, format, args);
+    va_end(args);
+  }
+}
+
+void networkTrain(NeuralNet *nn, Img **trainImgs, int numTrainImgs, Img **testImgs, int numTestImgs, int epochs, char *savePath, FILE *logFile)
 {
   int i, j, predLabel, numCorrect = 0;
+  double bestAccuracy = 0;
+
   for (j = 1; j <= epochs; j++)
   {
     numCorrect = 0;
     double loss = 0;
     printf("Training >> epoch:%d/%d\n", j, epochs);
-    for (i = 0; i < batchSize; i++)
+    logProgress(logFile, "Training >> epoch:%d/%d\n", j, epochs);
+
+    for (i = 0; i < numTrainImgs; i++)
     {
       if (i % 100 == 0 && i != 0)
+      {
         printf("Iter No. %d, Train Loss : %f, Train Accuracy : %f\n", i, loss / (i + 1), (double)numCorrect / i);
+        logProgress(logFile, "Iter No. %d, Train Loss : %f, Train Accuracy : %f\n", i, loss / (i + 1), (double)numCorrect / i);
+      }
 
-      Img *curImg = imgs[i];
+      Img *curImg = trainImgs[i];
       Matrix *input = matrixFlatten(curImg->imgData, 1); // 0 -> (1, x) row vector
       Matrix *output = matrixCreate(1, nn->outputDim);   // (1, outDim) one hot vector
       matrixFill(output, 0);
@@ -133,6 +152,21 @@ void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
       }
       matrixFree(input);
       matrixFree(output);
+    }
+
+    printf("Epoch %d, Train Loss : %f, Train Accuracy : %f\n", j, loss / numTrainImgs, (double)numCorrect / numTrainImgs);
+    logProgress(logFile, "Epoch %d, Train Loss : %f, Train Accuracy : %f\n", j, loss / numTrainImgs, (double)numCorrect / numTrainImgs);
+
+    double testAccuracy = networkPredictImgs(nn, testImgs, numTestImgs);
+    printf("Epoch %d, Test Accuracy : %f\n", j, testAccuracy);
+    logProgress(logFile, "Epoch %d, Test Accuracy : %f\n", j, testAccuracy);
+
+    if (testAccuracy > bestAccuracy)
+    {
+      printf("Test accuracy improved from %f to %f. Saving model...\n", bestAccuracy, testAccuracy);
+      logProgress(logFile, "Test accuracy improved from %f to %f. Saving model...\n", bestAccuracy, testAccuracy);
+      bestAccuracy = testAccuracy;
+      networkSave(nn, savePath);
     }
   }
 }
@@ -175,19 +209,37 @@ Matrix *networkPredict(NeuralNet *nn, Matrix *input)
   return z2;
 }
 
-void networkSave(NeuralNet *nn, char *fileName)
+void networkSave(NeuralNet *nn, const char *directoryName)
 {
-  mkdir(fileName, 0777);
-  chdir(fileName);
-  FILE *description = fopen("description", "w");
+  // Create the directory if it doesn't exist
+  mkdir(directoryName, 0777);
+
+  // Build file paths
+  char descriptionPath[256];
+  char hiddenLayerPath[256];
+  char outputLayerPath[256];
+
+  snprintf(descriptionPath, sizeof(descriptionPath), "%s/description", directoryName);
+  snprintf(hiddenLayerPath, sizeof(hiddenLayerPath), "%s/hidden", directoryName);
+  snprintf(outputLayerPath, sizeof(outputLayerPath), "%s/output", directoryName);
+
+  // Save description
+  FILE *description = fopen(descriptionPath, "w");
+  if (!description)
+  {
+    fprintf(stderr, "Error: Could not open file %s for writing.\n", descriptionPath);
+    return;
+  }
   fprintf(description, "%d\n", nn->inputDim);
   fprintf(description, "%d\n", nn->hiddenDim);
   fprintf(description, "%d\n", nn->outputDim);
   fclose(description);
-  matrixSave(nn->hiddenLayer, "hidden");
-  matrixSave(nn->outputLayer, "output");
-  printf("Successfully written to '%s'\n", fileName);
-  chdir("-"); // Go back to the orignal directory
+
+  // Save matrices
+  matrixSave(nn->hiddenLayer, hiddenLayerPath);
+  matrixSave(nn->outputLayer, outputLayerPath);
+
+  printf("Successfully written network to directory '%s'\n", directoryName);
 }
 
 NeuralNet *networkLoad(char *fileName)

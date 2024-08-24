@@ -10,35 +10,6 @@
 #include "ffNN/activations.h"
 #include "ffNN/nn.h"
 
-int getArg(int argc, char *argv[], int index, int defaultValue)
-{
-  if (index < argc)
-  {
-    return atoi(argv[index]);
-  }
-  return defaultValue;
-}
-
-double getDoubleArg(int argc, char *argv[], int index, double defaultValue)
-{
-  if (index < argc)
-  {
-    return atof(argv[index]);
-  }
-  return defaultValue;
-}
-
-int fileExists(const char *filePath)
-{
-  FILE *file = fopen(filePath, "r");
-  if (file)
-  {
-    fclose(file);
-    return 1; // File exists
-  }
-  return 0; // File does not exist or is not accessible
-}
-
 int main(int argc, char *argv[])
 {
   // Default parameter values
