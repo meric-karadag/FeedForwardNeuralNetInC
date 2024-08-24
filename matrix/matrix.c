@@ -64,7 +64,7 @@ void matrixPrint(Matrix *matrix)
     else
       printf(" %.3f]", matrix->entries[i][matrix->cols - 1]);
   }
-  printf("]");
+  printf("]\n");
 }
 
 // Allocate memory and create a deepcopy of matrix
@@ -172,7 +172,7 @@ int matrixArgmax(Matrix *matrix)
   int i, maxIdx = 0;
   double maxVal = __DBL_MIN__;
 
-  for (i = 0; i < matrix->rows; i++)
+  for (i = 0; i < matrix->cols; i++)
   {
     if (matrix->entries[0][i] > maxVal)
     {
