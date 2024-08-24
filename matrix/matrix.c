@@ -139,7 +139,7 @@ Matrix *matrixLoad(char *fileName)
   return matrix;
 }
 
-// Generate random numbers from normal distribution Using Box-Muller Transofrm
+// Generate random numbers from normal distribution Using Box-Muller Transform
 // Pass 0 mean, 1 std for standard uniform variables
 double randn(double mean, double std)
 {
@@ -165,26 +165,6 @@ void matrixRandomInit(Matrix *matrix, double mean, double std)
     }
   }
 }
-
-// Returns the index of maximum value from a column vector: Matrix of size (N x 1)
-/*
-int matrixArgmax(Matrix *matrix)
-{
-  int i, maxIdx = 0;
-  double maxVal = __DBL_MIN__;
-
-  for (i = 0; i < matrix->rows; i++)
-  {
-    if (matrix->entries[i][0] > maxVal)
-    {
-      maxVal = matrix->entries[i][0];
-      maxIdx = i;
-    }
-  }
-
-  return maxIdx;
-}
-*/
 
 // Returns the index of maximum value from a row vector: Matrix of size (1 x N)
 int matrixArgmax(Matrix *matrix)

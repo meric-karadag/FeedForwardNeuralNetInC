@@ -117,7 +117,7 @@ void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
     for (i = 0; i < batchSize; i++)
     {
       if (i % 100 == 0 && i != 0)
-        printf("Iter No. %d, Loss : %f, Accuracy : %f\n", i, loss / (i + 1), (double)numCorrect / i);
+        printf("Iter No. %d, Train Loss : %f, Train Accuracy : %f\n", i, loss / (i + 1), (double)numCorrect / i);
 
       Img *curImg = imgs[i];
       Matrix *input = matrixFlatten(curImg->imgData, 1); // 0 -> (1, x) row vector
