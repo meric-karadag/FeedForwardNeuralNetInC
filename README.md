@@ -8,6 +8,9 @@ Overview
 
 This project is a 2 layer fully connected neural network implemented from scratch in C. The network is designed to train on the MNIST dataset, a collection of handwritten digits, however and it can be adapted to a wide variety of data with minor changes in code. The network is capable of achieving high accuracy on both training and test data. The project showcases how low-level programming in C can be used to build a fundamental machine learning model, complete with custom matrix operations, a complete forward and backward pass, file handling, and command-line argument parsing from scratch.
 
+A quick look at the handwritten digits in the mnist dataset:
+![MNIST Dataset](./mnist.png)
+
 Features
 --------
 
