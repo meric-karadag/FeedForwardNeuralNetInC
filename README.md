@@ -70,6 +70,9 @@ To run the program with specific parameters:
 
 This command will train the neural network with 5000 training images and 1000 test images over 10 epochs, log the progress to `training.log`, and save the best model to `model.bin`.
 
+Data
+----
+The training and test data can be obtain from the following link: [MNIST Dataset](https://www.kaggle.com/oddrationale/mnist-in-csv)
 
 Results
 -------
