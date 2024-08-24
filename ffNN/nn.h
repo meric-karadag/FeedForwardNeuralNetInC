@@ -15,7 +15,7 @@ typedef struct
 } NeuralNet;
 
 NeuralNet *networkCreate(int inputDim, int hiddenDim, int outputDim, double learningRate);
-double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs);
+double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predictedLabel);
 void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs);
 Matrix *networkPredictImg(NeuralNet *nn, Img *img);
 double networkPredictImgs(NeuralNet *nn, Img **imgs, int n);

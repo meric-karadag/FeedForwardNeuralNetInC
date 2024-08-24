@@ -29,7 +29,7 @@ NeuralNet *networkCreate(int inputDim, int hiddenDim, int outputDim, double lear
   return nn;
 }
 
-double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs)
+double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predictedLabel)
 {
   // Forward pass
 
@@ -42,7 +42,7 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs)
   Matrix *h2 = dot(z1, nn->outputLayer);
 
   Matrix *z2 = softmax(h2);
-
+  predictedLabel[0] = matrixArgmax(z2);
   // Calculate loss
   double loss = crossEntropyLoss(z2, outputs);
 
@@ -109,7 +109,7 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs)
 
 void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
 {
-  int i, j;
+  int i, j, predLabel, numCorrect = 0;
   for (j = 1; j <= epochs; j++)
   {
     double loss = 0;
@@ -117,13 +117,17 @@ void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
     for (i = 0; i < batchSize; i++)
     {
       if (i % 100 == 0 && i != 0)
-        printf("Iter No. %d, Loss : %f\n", i, loss / (i + 1));
+        printf("Iter No. %d, Loss : %f, Accuracy : %f\n", i, loss / (i + 1), (double)numCorrect / i);
 
       Img *curImg = imgs[i];
       Matrix *input = matrixFlatten(curImg->imgData, 1); // 0 -> (1, x) row vector
       Matrix *output = matrixCreate(1, nn->outputDim);   // (1, outDim) one hot vector
       output->entries[0][curImg->label] = 1;             // Set the correct label in one hot vector
-      loss += networkStep(nn, input, output);
+      loss += networkStep(nn, input, output, &predLabel);
+      if (predLabel == curImg->label)
+      {
+        numCorrect++;
+      }
       matrixFree(input);
       matrixFree(output);
     }
