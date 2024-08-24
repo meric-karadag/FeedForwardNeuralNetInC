@@ -20,8 +20,8 @@ NeuralNet *networkCreate(int inputDim, int hiddenDim, int outputDim, double lear
   Matrix *hiddenLayer = matrixCreate(inputDim, hiddenDim);
   Matrix *outputLayer = matrixCreate(hiddenDim, outputDim);
 
-  matrixRandomInit(hiddenLayer, 0, 0.5);
-  matrixRandomInit(outputLayer, 0, 0.5);
+  matrixRandomInit(hiddenLayer, 0, 0.3);
+  matrixRandomInit(outputLayer, 0, 0.3);
 
   nn->hiddenLayer = hiddenLayer;
   nn->outputLayer = outputLayer;
@@ -42,7 +42,11 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predicte
   Matrix *h2 = dot(z1, nn->outputLayer);
 
   Matrix *z2 = softmax(h2);
-  predictedLabel[0] = matrixArgmax(z2);
+  *predictedLabel = matrixArgmax(z2);
+
+  // printf("Predicted Label: %d\n", *predictedLabel);
+  // matrixPrint(z2);
+
   // Calculate loss
   double loss = crossEntropyLoss(z2, outputs);
 
@@ -52,7 +56,7 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predicte
   Matrix *outputLayerT = transpose(nn->outputLayer);
   Matrix *z1T = transpose(z1);
   Matrix *inputsT = transpose(inputs);
-
+  Matrix *z1Prime = apply(z1, reluPrime);
   // Calculate error and take partial derivates
 
   // (n, outDim) = (n, outDim) - (n, outDim)
@@ -68,7 +72,7 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predicte
 
   // d Loss / d h1
   // (n, hiddenDim) = (n, hiddenDim) * (n, hiddenDim)
-  Matrix *hiddenGradient = elementWiseMultiply(hiddenError, apply(z1, reluPrime));
+  Matrix *hiddenGradient = elementWiseMultiply(hiddenError, z1Prime);
 
   // d Loss / d HiddenLayer
   // (inputDim, hiddenDim) = (inputDim, n) @ (n, hiddenDim)
@@ -85,9 +89,6 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predicte
   matrixFree(nn->hiddenLayer);
   nn->hiddenLayer = newHiddenLayer;
 
-  // matrixPrint(nn->hiddenLayer);
-  // matrixPrint(nn->outputLayer);
-
   // Free matrices
   matrixFree(h1);
   matrixFree(z1);
@@ -103,7 +104,7 @@ double networkStep(NeuralNet *nn, Matrix *inputs, Matrix *outputs, int *predicte
   matrixFree(inputsT);
   matrixFree(scaledOutputLayerGradients);
   matrixFree(scaledHiddenLayerGradients);
-
+  matrixFree(z1Prime);
   return loss;
 }
 
@@ -112,6 +113,7 @@ void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
   int i, j, predLabel, numCorrect = 0;
   for (j = 1; j <= epochs; j++)
   {
+    numCorrect = 0;
     double loss = 0;
     printf("Training >> epoch:%d/%d\n", j, epochs);
     for (i = 0; i < batchSize; i++)
@@ -122,7 +124,8 @@ void networkTrainBatchImgs(NeuralNet *nn, Img **imgs, int batchSize, int epochs)
       Img *curImg = imgs[i];
       Matrix *input = matrixFlatten(curImg->imgData, 1); // 0 -> (1, x) row vector
       Matrix *output = matrixCreate(1, nn->outputDim);   // (1, outDim) one hot vector
-      output->entries[0][curImg->label] = 1;             // Set the correct label in one hot vector
+      matrixFill(output, 0);
+      output->entries[0][curImg->label] = 1; // Set the correct label in one hot vector
       loss += networkStep(nn, input, output, &predLabel);
       if (predLabel == curImg->label)
       {
