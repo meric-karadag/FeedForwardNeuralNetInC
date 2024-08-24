@@ -42,7 +42,8 @@ Usage
 The program can be executed with a variety of command-line arguments to customize its behavior. Below is an example command with explanations for each argument:
 
 ```bash
-./neural_network -t ./data/mnist_train.csv -T ./data/mnist_test.csv -e 10 -l 0.001 -h 256 -d ./model.bin -r 5000 -s 1000 -R 28 -S 28 -c 10 -o ./training.log
+./neural_network -t ./data/mnist_train.csv -T ./data/mnist_test.csv -e 10 -l 0.001 \
+-h 256 -d ./model.bin -r 5000 -s 1000 -R 28 -S 28 -c 10 -o ./training.log
 ```
 
 ### Command-Line Arguments:
@@ -65,7 +66,8 @@ The program can be executed with a variety of command-line arguments to customiz
 To run the program with specific parameters:
 
 ```bash
-./neural_network -t ./data/mnist_train.csv -T ./data/mnist_test.csv -e 10 -l 0.001 -h 256 -d ./model.bin -r 5000 -s 1000 -R 28 -S 28 -c 10 -o ./training.log
+./neural_network -t ./data/mnist_train.csv -T ./data/mnist_test.csv -e 10 -l 0.001 \
+-h 256 -d ./model.bin -r 5000 -s 1000 -R 28 -S 28 -c 10 -o ./training.log
 ```
 
 This command will train the neural network with 5000 training images and 1000 test images over 10 epochs, log the progress to `training.log`, and save the best model to `model.bin`.
