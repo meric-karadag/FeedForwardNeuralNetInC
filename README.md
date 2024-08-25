@@ -6,7 +6,11 @@ Fully Connected Neural Network in C
 Overview
 --------
 
-This project is a 2 layer fully connected neural network implemented from scratch in C. The network is designed to train on the MNIST dataset, a collection of handwritten digits, however and it can be adapted to a wide variety of data with minor changes in code. The network is capable of achieving high accuracy on both training and test data. The project showcases how low-level programming in C can be used to build a fundamental machine learning model, complete with custom matrix operations, a complete forward and backward pass, file handling, and command-line argument parsing from scratch.
+This project is a 2 layer fully connected neural network implemented from scratch in C. 
+
+The neural network is originally designed to be trained on the MNIST dataset, a collection of handwritten digits, however and it can be adapted to a wide variety of data with minor changes in code. 
+
+The project showcases how low-level programming in C can be used to build an end to end machine learning model, complete with custom matrix operations, a complete forward and backward pass, file handling, and command-line argument parsing from scratch.
 
 A quick look at the handwritten digits in the mnist dataset:
 ![MNIST Dataset](./mnist.png)
@@ -14,7 +18,7 @@ A quick look at the handwritten digits in the mnist dataset:
 Features
 --------
 
-*   **Low-Level Implementation**: The project demonstrates core machine learning concepts without relying on high-level libraries, focusing on how neural networks work under the hood. Espacially, the backprogataion code is neatly commented for a better understanding.
+*   **Low-Level Implementation**: The project demonstrates core machine learning concepts, (gradient descent based optimization) without relying on high-level libraries, focusing on how neural networks work under the hood. Espacially, the backprogataion code is neatly commented for a better understanding.
 *   **Custom Matrix Operations**: Handcrafted matrix operations to handle the necessary computations for the neural network.
 *   **Flexible Command-Line Interface**: Allows users to customize hyperparameters and paths through command-line arguments using `getopt`.
 *   **Progress Logging**: Training progress and accuracy can be logged to a file for later analysis.
@@ -25,7 +29,7 @@ File Structure
 
 *   **`main.c`** : Main driver code, handling command-line arguments, data loading, training, and saving the network.
 *   **`ffNN/nn.c` & `ffNN/nn.h`** : Implements the neural network, including functions for training, optimization algorithm, saving, and loading the model.
-*   **`matrix/matrix.c` & `matrix/matrix.h` & `matrix/matrixOps.c` & `matrix/matrixOps.h` ** : Provides the matrix structure and matrix operations needed for network computations.
+*   **`matrix/matrix.c` & `matrix/matrix.h` & `matrix/matrixOps.c` & `matrix/matrixOps.h`** : Provides the matrix structure and matrix operations needed for network computations.
 *   **`img/img.c` & `img/img.h`** : Handles image data loading from CSV files, specifically for the MNIST dataset. Can be apodted for other datasets with minor changes. Eg. setting row size = 1 for a 1D datasets.
 
 Compilation
@@ -65,8 +69,6 @@ The program can be executed with a variety of command-line arguments to customiz
 *   **`-o <log_file_path>`** : Path to a file where training progress will be logged.
 
 ### Example:
-
-To run the program with specific parameters:
 
 ```bash
 ./neural_network -t ./data/mnist_train.csv -T ./data/mnist_test.csv -e 10 -l 0.001 \
